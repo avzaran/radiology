@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \":*)",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(npm create vite@latest . -- --template react-ts --yes)",
+      "Bash(npm init -y)",
+      "Bash(npm install fastify @fastify/cors @fastify/jwt @fastify/helmet)",
+      "Bash(npm install)",
+      "Bash(npm install -D typescript @types/node ts-node nodemon)",
+      "Bash(npm install tailwindcss @tailwindcss/vite zustand recharts react-hook-form zod @hookform/resolvers react-router-dom axios)",
+      "Bash(npm install -D @fontsource/inter @fontsource/jetbrains-mono)",
+      "Bash(npx tsc --init)",
+      "Bash(npm install -D eslint prettier eslint-config-prettier eslint-plugin-react eslint-plugin-react-hooks @typescript-eslint/eslint-plugin @typescript-eslint/parser)",
+      "Bash(npm install pg knex dotenv)",
+      "Bash(npm install -D @types/pg)",
+      "Bash(npm run build)",
+      "Bash(docker --version)",
+      "Bash(docker-compose --version)",
+      "Bash(psql --version)",
+      "Bash(pg_isready)",
+      "Bash(powershell.exe -Command \"docker --version\")",
+      "Bash(powershell.exe -Command \"Get-Service -Name postgresql* | Select-Object Name,Status\")",
+      "Bash(powershell.exe -Command \"Get-Service | Where-Object {$_Name -like ''*postgres*'' -or $_Name -like ''*pg*''} | Select-Object Name,Status\")"
+    ]
+  }
+}

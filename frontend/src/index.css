@@ -1,0 +1,42 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/jetbrains-mono/300.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/700.css';
+
+@import 'tailwindcss';
+
+@theme {
+  --color-bg-base: #0A0E1A;
+  --color-bg-card: #0F172A;
+  --color-accent: #6366F1;
+  --color-data: #06B6D4;
+  --color-risk-green: #22C55E;
+  --color-risk-yellow: #EAB308;
+  --color-risk-orange: #F97316;
+  --color-risk-red: #EF4444;
+  --color-text-primary: #E2E8F0;
+  --color-text-secondary: #64748B;
+
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background-color: #0A0E1A;
+  color: #E2E8F0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
