@@ -1,6 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Card } from '../components/ui/Card'
 import { SmartTextarea } from '../components/ui/SmartTextarea'
+import { Button } from '../components/ui/Button'
+import { Input } from '../components/ui/Input'
+import { Select } from '../components/ui/Select'
+import { Label } from '../components/ui/Label'
+import { Tabs } from '../components/ui/Tabs'
 import { calcVolume } from '../utils/calc'
 import { type Template } from '../utils/templateEngine'
 import api from '../api/client'
@@ -44,7 +49,21 @@ const REGIONS: Record<Modality, string[]> = {
   mammography: ['Молочные железы'],
 }
 
-const STEPS = ['Исследование', 'Описание', 'Образования', 'Заключение']
+const STEPS = [
+  { key: '0', label: '1. Исследование' },
+  { key: '1', label: '2. Описание' },
+  { key: '2', label: '3. Образования' },
+  { key: '3', label: '4. Заключение' },
+]
+
+const SCALE_OPTIONS = [
+  { value: '', label: '—' },
+  { value: 'tirads', label: 'TI-RADS' },
+  { value: 'fleischner', label: 'Fleischner' },
+  { value: 'birads', label: 'BI-RADS' },
+  { value: 'lungrads', label: 'Lung-RADS' },
+]
+
 const TEMPLATE_CACHE_KEY = 'rad_templates_v1'
 
 function newLesion(): LesionRow {
@@ -101,7 +120,6 @@ export function ReportsPage() {
   const [copied, setCopied] = useState(false)
   const [templates, setTemplates] = useState<Template[]>([])
 
-  // Загрузка шаблонов: сначала кэш, затем свежие данные с API
   useEffect(() => {
     const cached = localStorage.getItem(TEMPLATE_CACHE_KEY)
     if (cached) {
@@ -165,32 +183,17 @@ export function ReportsPage() {
         <h1 className="text-xl font-semibold" style={{ color: '#E2E8F0' }}>
           Генератор заключений
         </h1>
-        <button
-          onClick={handleReset}
-          className="text-xs px-3 py-1.5 rounded-lg transition-colors"
-          style={{ color: '#64748B', border: '1px solid rgba(99,102,241,0.15)' }}
-        >
+        <Button variant="secondary" size="sm" onClick={handleReset}>
           Новый протокол
-        </button>
+        </Button>
       </div>
 
       {/* Прогресс */}
-      <div className="flex gap-1">
-        {STEPS.map((s, i) => (
-          <button
-            key={s}
-            onClick={() => setStep(i)}
-            className="flex-1 py-1.5 rounded text-xs font-medium transition-colors"
-            style={{
-              backgroundColor: i === step ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.05)',
-              color: i === step ? '#6366F1' : '#64748B',
-              border: `1px solid ${i === step ? '#6366F1' : 'rgba(99,102,241,0.1)'}`,
-            }}
-          >
-            {i + 1}. {s}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        tabs={STEPS}
+        active={String(step)}
+        onChange={(key) => setStep(Number(key))}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Левая панель — форма */}
@@ -208,22 +211,14 @@ export function ReportsPage() {
 
           <div className="flex gap-2">
             {step > 0 && (
-              <button
-                onClick={() => setStep((s) => s - 1)}
-                className="flex-1 py-2.5 rounded-lg text-sm"
-                style={{ backgroundColor: 'rgba(99,102,241,0.1)', color: '#6366F1' }}
-              >
+              <Button variant="secondary" size="md" className="flex-1" onClick={() => setStep((s) => s - 1)}>
                 ← Назад
-              </button>
+              </Button>
             )}
             {step < STEPS.length - 1 && (
-              <button
-                onClick={() => setStep((s) => s + 1)}
-                className="flex-1 py-2.5 rounded-lg text-sm font-medium"
-                style={{ backgroundColor: '#6366F1', color: '#fff' }}
-              >
+              <Button size="md" className="flex-1" onClick={() => setStep((s) => s + 1)}>
                 Далее →
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -232,35 +227,33 @@ export function ReportsPage() {
         <div className="flex flex-col gap-3">
           <Card>
             <div className="flex items-center justify-between mb-3">
-              <span
-                className="text-xs font-semibold uppercase tracking-widest"
-                style={{ color: '#64748B' }}
-              >
-                Превью протокола
-              </span>
+              <Label>Превью протокола</Label>
               <div className="flex gap-2">
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={handleCopy}
-                  className="text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
                   style={{
                     backgroundColor: copied ? 'rgba(34,197,94,0.15)' : 'rgba(99,102,241,0.1)',
                     color: copied ? '#22C55E' : '#6366F1',
+                    border: 'none',
                   }}
                 >
                   {copied ? '✓ Скопировано' : 'Копировать'}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  loading={saving}
                   onClick={handleSave}
-                  disabled={saving}
-                  className="text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
                   style={{
                     backgroundColor: saved ? 'rgba(34,197,94,0.15)' : 'rgba(99,102,241,0.15)',
                     color: saved ? '#22C55E' : '#6366F1',
-                    opacity: saving ? 0.7 : 1,
+                    border: 'none',
                   }}
                 >
-                  {saving ? 'Сохранение...' : saved ? '✓ Сохранено' : 'Сохранить'}
-                </button>
+                  {saved ? '✓ Сохранено' : 'Сохранить'}
+                </Button>
               </div>
             </div>
             <pre
@@ -282,25 +275,17 @@ type SetField = <K extends keyof ReportForm>(k: K, v: ReportForm[K]) => void
 
 function StepModality({ form, setField }: { form: ReportForm; setField: SetField }) {
   const regions = REGIONS[form.modality]
+  const modalityTabs = MODALITIES.map((m) => ({ key: m.value, label: m.label }))
+
   return (
     <Card>
       <Label>Модальность</Label>
-      <div className="flex flex-wrap gap-2 mb-4">
-        {MODALITIES.map((m) => (
-          <button
-            key={m.value}
-            onClick={() => { setField('modality', m.value); setField('region', '') }}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            style={{
-              backgroundColor: form.modality === m.value ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.05)',
-              color: form.modality === m.value ? '#6366F1' : '#64748B',
-              border: `1px solid ${form.modality === m.value ? '#6366F1' : 'rgba(99,102,241,0.1)'}`,
-            }}
-          >
-            {m.label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        tabs={modalityTabs}
+        active={form.modality}
+        onChange={(key) => { setField('modality', key as Modality); setField('region', '') }}
+        className="mb-4"
+      />
 
       <Label>Область исследования</Label>
       <div className="flex flex-wrap gap-2 mb-4">
@@ -318,37 +303,25 @@ function StepModality({ form, setField }: { form: ReportForm; setField: SetField
             {r}
           </button>
         ))}
-        <input
+        <Input
           placeholder="Или введите вручную..."
           value={regions.includes(form.region) ? '' : form.region}
           onChange={(e) => setField('region', e.target.value)}
-          className="px-3 py-1.5 rounded-lg text-xs outline-none"
-          style={{
-            backgroundColor: 'rgba(99,102,241,0.05)',
-            border: '1px solid rgba(99,102,241,0.1)',
-            color: '#E2E8F0',
-            minWidth: 160,
-          }}
+          inputSize="sm"
+          className="w-auto"
+          style={{ minWidth: 160 }}
         />
       </div>
 
       <Label>Контрастное усиление</Label>
-      <div className="flex gap-2">
-        {([false, true] as const).map((val) => (
-          <button
-            key={String(val)}
-            onClick={() => setField('contrast', val)}
-            className="px-4 py-2 rounded-lg text-sm transition-colors"
-            style={{
-              backgroundColor: form.contrast === val ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.05)',
-              color: form.contrast === val ? '#6366F1' : '#64748B',
-              border: `1px solid ${form.contrast === val ? '#6366F1' : 'rgba(99,102,241,0.1)'}`,
-            }}
-          >
-            {val ? 'Применялось' : 'Не применялось'}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        tabs={[
+          { key: 'false', label: 'Не применялось' },
+          { key: 'true', label: 'Применялось' },
+        ]}
+        active={String(form.contrast)}
+        onChange={(key) => setField('contrast', key === 'true')}
+      />
     </Card>
   )
 }
@@ -392,13 +365,9 @@ function StepLesions({
     <Card>
       <div className="flex items-center justify-between mb-3">
         <Label>Образования</Label>
-        <button
-          onClick={() => setLesions((ls) => [...ls, newLesion()])}
-          className="text-xs px-3 py-1 rounded-lg"
-          style={{ backgroundColor: 'rgba(99,102,241,0.1)', color: '#6366F1' }}
-        >
+        <Button variant="secondary" size="sm" onClick={() => setLesions((ls) => [...ls, newLesion()])}>
           + Добавить
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -422,28 +391,34 @@ function StepLesions({
                   #{idx + 1}
                 </span>
                 {lesions.length > 1 && (
-                  <button
+                  <Button
+                    variant="danger"
+                    size="sm"
                     onClick={() => setLesions((ls) => ls.filter((x) => x.id !== l.id))}
-                    className="text-xs"
-                    style={{ color: '#EF4444' }}
                   >
                     Удалить
-                  </button>
+                  </Button>
                 )}
               </div>
 
-              <Field
-                label="Название"
-                value={l.name}
-                onChange={(v) => updateLesion(l.id, 'name', v)}
-                placeholder="Узел S6 правого лёгкого"
-              />
-              <Field
-                label="Локализация"
-                value={l.location}
-                onChange={(v) => updateLesion(l.id, 'location', v)}
-                placeholder="Нижняя доля, субплеврально"
-              />
+              <div className="flex-1">
+                <label className="text-xs block mb-1" style={{ color: '#64748B' }}>Название</label>
+                <Input
+                  value={l.name}
+                  onChange={(e) => updateLesion(l.id, 'name', e.target.value)}
+                  placeholder="Узел S6 правого лёгкого"
+                  inputSize="sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="text-xs block mb-1" style={{ color: '#64748B' }}>Локализация</label>
+                <Input
+                  value={l.location}
+                  onChange={(e) => updateLesion(l.id, 'location', e.target.value)}
+                  placeholder="Нижняя доля, субплеврально"
+                  inputSize="sm"
+                />
+              </div>
 
               <div className="flex gap-2">
                 <SizeField label="a, мм" value={l.size_a} onChange={(v) => updateLesion(l.id, 'size_a', v)} />
@@ -460,29 +435,22 @@ function StepLesions({
               <div className="flex gap-2">
                 <div className="flex-1">
                   <label className="text-xs mb-1 block" style={{ color: '#64748B' }}>Шкала</label>
-                  <select
+                  <Select
+                    options={SCALE_OPTIONS}
                     value={l.scale_type}
                     onChange={(e) => updateLesion(l.id, 'scale_type', e.target.value)}
-                    className="w-full px-2 py-1.5 rounded text-xs outline-none"
-                    style={{
-                      backgroundColor: 'rgba(99,102,241,0.08)',
-                      border: '1px solid rgba(99,102,241,0.15)',
-                      color: '#E2E8F0',
-                    }}
-                  >
-                    <option value="">—</option>
-                    <option value="tirads">TI-RADS</option>
-                    <option value="fleischner">Fleischner</option>
-                    <option value="birads">BI-RADS</option>
-                    <option value="lungrads">Lung-RADS</option>
-                  </select>
+                    inputSize="sm"
+                  />
                 </div>
-                <Field
-                  label="Результат"
-                  value={l.score}
-                  onChange={(v) => updateLesion(l.id, 'score', v)}
-                  placeholder="TR3, 3 мес КТ..."
-                />
+                <div className="flex-1">
+                  <label className="text-xs block mb-1" style={{ color: '#64748B' }}>Результат</label>
+                  <Input
+                    value={l.score}
+                    onChange={(e) => updateLesion(l.id, 'score', e.target.value)}
+                    placeholder="TR3, 3 мес КТ..."
+                    inputSize="sm"
+                  />
+                </div>
               </div>
             </div>
           )
@@ -518,49 +486,7 @@ function StepConclusion({
   )
 }
 
-// ─── Атомарные хелперы ────────────────────────────────────────
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label
-      className="text-xs font-semibold uppercase tracking-widest block mb-2"
-      style={{ color: '#64748B' }}
-    >
-      {children}
-    </label>
-  )
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
-}) {
-  return (
-    <div className="flex-1">
-      <label className="text-xs block mb-1" style={{ color: '#64748B' }}>
-        {label}
-      </label>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full px-2 py-1.5 rounded text-xs outline-none"
-        style={{
-          backgroundColor: 'rgba(99,102,241,0.08)',
-          border: '1px solid rgba(99,102,241,0.15)',
-          color: '#E2E8F0',
-        }}
-      />
-    </div>
-  )
-}
-
+// ─── SizeField (специфический компонент для размеров) ────────
 function SizeField({
   label,
   value,
@@ -575,13 +501,14 @@ function SizeField({
       <label className="text-xs block mb-1" style={{ color: '#64748B' }}>
         {label}
       </label>
-      <input
+      <Input
         type="number"
         min="0"
         step="0.1"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-2 py-1.5 rounded text-xs outline-none text-right"
+        inputSize="sm"
+        className="text-right"
         style={{
           backgroundColor: 'rgba(6,182,212,0.08)',
           border: '1px solid rgba(6,182,212,0.2)',

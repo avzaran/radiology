@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import knex from '../db/knex.js'
+import knex from '../db/knex'
 
 // Конфигурации шкал — хранятся на бэкенде, отдаются на клиент для офлайн-кеша
 const SCALE_CONFIGS: Record<string, object> = {
@@ -10,7 +10,7 @@ const SCALE_CONFIGS: Record<string, object> = {
 }
 
 export async function scaleRoutes(app: FastifyInstance) {
-  const authenticate = async (req: Parameters<typeof app.authenticate>[0]) => app.authenticate(req)
+  const authenticate = app.authenticate.bind(app)
 
   // GET /scales/:type/config — конфигурация шкалы
   app.get<{ Params: { type: string } }>('/scales/:type/config', async (request, reply) => {

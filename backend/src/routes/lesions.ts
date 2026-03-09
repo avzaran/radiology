@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import knex from '../db/knex.js'
+import knex from '../db/knex'
 
 export async function lesionRoutes(app: FastifyInstance) {
   const authenticate = async (req: Parameters<typeof app.authenticate>[0]) => app.authenticate(req)

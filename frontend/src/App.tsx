@@ -3,6 +3,7 @@ import { AppShell } from './components/layout/AppShell'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { ReportsPage } from './pages/ReportsPage'
+import { PatientsPage } from './pages/PatientsPage'
 
 // Заглушки для страниц, которые будут реализованы в следующих этапах
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -30,6 +31,7 @@ export function App() {
           <Route path="calculator/:type" element={<PlaceholderPage title="Калькулятор шкалы" />} />
           <Route path="tracker" element={<PlaceholderPage title="Трекер образований" />} />
           <Route path="tracker/:id" element={<PlaceholderPage title="Карточка образования" />} />
+          <Route path="patients" element={<PatientsPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="settings" element={<PlaceholderPage title="Настройки" />} />
         </Route>

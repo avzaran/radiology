@@ -1,5 +1,12 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify'
 
+// Расширяем типы Fastify — добавляем authenticate
+declare module 'fastify' {
+  interface FastifyInstance {
+    authenticate: (request: FastifyRequest) => Promise<void>
+  }
+}
+
 // Декоратор для защищённых маршрутов
 export async function registerAuth(app: FastifyInstance) {
   app.decorate('authenticate', async (request: FastifyRequest) => {
@@ -16,7 +23,7 @@ export function requireTier(minTier: 'free' | 'pro' | 'clinic') {
     const user = request.user as { subscription_tier: string }
     const userTier = (user.subscription_tier ?? 'free') as keyof typeof tierOrder
     if (tierOrder[userTier] < tierOrder[minTier]) {
-      throw { statusCode: 403, message: `Требуется тариф ${minTier} или выше` }
+      throw { statusCode: 403, message: "Requires " + minTier + " tier or higher" }
     }
   }
 }

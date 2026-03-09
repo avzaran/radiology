@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import knex from '../db/knex.js'
+import knex from '../db/knex'
 import crypto from 'crypto'
 
 function hashPassword(password: string): string {

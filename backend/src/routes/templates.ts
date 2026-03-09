@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import db from '../db/knex.js'
+import db from '../db/knex'
 
 interface TemplatesQuery {
   modality?: string

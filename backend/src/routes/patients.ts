@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify'
-import knex from '../db/knex.js'
+import knex from '../db/knex'
 
 export async function patientRoutes(app: FastifyInstance) {
-  const authenticate = async (req: Parameters<typeof app.authenticate>[0]) => app.authenticate(req)
+  const authenticate = app.authenticate.bind(app)
 
   // GET /patients — список пациентов текущего врача
   app.get('/patients', { preHandler: authenticate }, async (request) => {

@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import knex from '../db/knex.js'
+import knex from '../db/knex'
 
 interface LesionInReport {
   name: string
@@ -13,7 +13,7 @@ interface LesionInReport {
 }
 
 export async function reportRoutes(app: FastifyInstance) {
-  const authenticate = async (req: Parameters<typeof app.authenticate>[0]) => app.authenticate(req)
+  const authenticate = app.authenticate.bind(app)
 
   // POST /reports/generate — создание протокола
   app.post<{

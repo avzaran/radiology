@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
 import api from '../api/client'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { Alert } from '../components/ui/Alert'
 
 export function LoginPage() {
   const [isRegister, setIsRegister] = useState(false)
@@ -48,71 +51,43 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {isRegister && (
-            <input
+            <Input
               type="text"
               placeholder="Полное имя"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="px-4 py-3 rounded-lg text-sm outline-none w-full"
-              style={{
-                backgroundColor: 'rgba(99,102,241,0.05)',
-                border: '1px solid rgba(99,102,241,0.2)',
-                color: '#E2E8F0',
-              }}
+              inputSize="lg"
             />
           )}
-          <input
+          <Input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="px-4 py-3 rounded-lg text-sm outline-none w-full"
-            style={{
-              backgroundColor: 'rgba(99,102,241,0.05)',
-              border: '1px solid rgba(99,102,241,0.2)',
-              color: '#E2E8F0',
-            }}
+            inputSize="lg"
           />
-          <input
+          <Input
             type="password"
             placeholder="Пароль"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={8}
-            className="px-4 py-3 rounded-lg text-sm outline-none w-full"
-            style={{
-              backgroundColor: 'rgba(99,102,241,0.05)',
-              border: '1px solid rgba(99,102,241,0.2)',
-              color: '#E2E8F0',
-            }}
+            inputSize="lg"
           />
 
-          {error && (
-            <div className="text-xs px-3 py-2 rounded" style={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#EF4444' }}>
-              {error}
-            </div>
-          )}
+          {error && <Alert>{error}</Alert>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="py-3 rounded-lg font-medium text-sm transition-opacity"
-            style={{ backgroundColor: '#6366F1', color: '#fff', opacity: loading ? 0.7 : 1 }}
-          >
-            {loading ? 'Загрузка...' : isRegister ? 'Зарегистрироваться' : 'Войти'}
-          </button>
+          <Button type="submit" loading={loading} size="lg" fullWidth>
+            {isRegister ? 'Зарегистрироваться' : 'Войти'}
+          </Button>
         </form>
 
         <div className="text-center mt-4">
-          <button
-            onClick={() => setIsRegister(!isRegister)}
-            className="text-xs"
-            style={{ color: '#64748B' }}
-          >
+          <Button variant="ghost" size="sm" onClick={() => setIsRegister(!isRegister)}>
             {isRegister ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

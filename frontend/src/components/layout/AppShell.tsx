@@ -2,9 +2,12 @@ import { useEffect } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useUIStore } from '../../stores/uiStore'
+import { Alert } from '../ui/Alert'
+import { Button } from '../ui/Button'
 
 const NAV_ITEMS = [
   { to: '/', label: 'Главная', icon: '⌂' },
+  { to: '/patients', label: 'Пациенты', icon: '⊕' },
   { to: '/calculator', label: 'Калькуляторы', icon: '◈' },
   { to: '/tracker', label: 'Трекер', icon: '◉' },
   { to: '/reports', label: 'Заключения', icon: '◧' },
@@ -73,22 +76,13 @@ export function AppShell() {
 
         <div className="p-3 border-t" style={{ borderColor: 'rgba(99,102,241,0.15)' }}>
           {!isOnline && (
-            <div
-              className="text-xs px-2 py-1 rounded mb-2 text-center"
-              style={{ backgroundColor: 'rgba(234,179,8,0.1)', color: '#EAB308' }}
-            >
+            <Alert variant="warning" className="mb-2 justify-center">
               Офлайн-режим
-            </div>
+            </Alert>
           )}
-          <button
-            onClick={logout}
-            className="w-full text-xs px-3 py-2 rounded-lg transition-colors"
-            style={{ color: '#64748B', backgroundColor: 'transparent' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#EF4444')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#64748B')}
-          >
+          <Button variant="ghost" size="sm" fullWidth onClick={logout}>
             Выйти
-          </button>
+          </Button>
         </div>
       </aside>
 

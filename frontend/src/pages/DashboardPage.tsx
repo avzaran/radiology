@@ -70,6 +70,12 @@ const QUICK_ACTIONS = [
     description: 'Скрининг рака лёгкого',
   },
   {
+    href: '/patients',
+    icon: '⊕',
+    title: 'Пациенты',
+    description: 'Список и карточки пациентов',
+  },
+  {
     href: '/tracker',
     icon: '◎',
     title: 'Трекер образований',
