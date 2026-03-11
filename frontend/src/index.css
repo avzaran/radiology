@@ -1,10 +1,4 @@
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/jetbrains-mono/300.css';
-@import '@fontsource/jetbrains-mono/400.css';
-@import '@fontsource/jetbrains-mono/700.css';
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
 @import 'tailwindcss';
 
@@ -20,8 +14,8 @@
   --color-text-primary: #E2E8F0;
   --color-text-secondary: #64748B;
 
-  --font-family-sans: 'Inter', system-ui, sans-serif;
-  --font-family-mono: 'JetBrains Mono', monospace;
+  --font-family-sans: 'DM Sans', 'Segoe UI', sans-serif;
+  --font-family-mono: 'DM Sans', 'Segoe UI', monospace;
 }
 
 * {
@@ -36,7 +30,7 @@ body,
   height: 100%;
   background-color: #0A0E1A;
   color: #E2E8F0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
