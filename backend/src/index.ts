@@ -12,6 +12,7 @@ import { patientRoutes } from './routes/patients'
 import { scaleRoutes } from './routes/scales'
 import { reportRoutes } from './routes/reports'
 import { templateRoutes } from './routes/templates'
+import { statisticsRoutes } from './routes/statistics'
 
 async function main() {
   const app = Fastify({ logger: true })
@@ -37,6 +38,7 @@ async function main() {
   await app.register(scaleRoutes, { prefix: '/api' })
   await app.register(reportRoutes, { prefix: '/api' })
   await app.register(templateRoutes, { prefix: '/api' })
+  await app.register(statisticsRoutes, { prefix: '/api' })
 
   // ─── Старт ───────────────────────────────────────────────────
   const PORT = Number(process.env['PORT'] ?? 4000)
