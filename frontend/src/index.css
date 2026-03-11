@@ -15,7 +15,7 @@
   --color-text-secondary: #64748B;
 
   --font-family-sans: 'DM Sans', 'Segoe UI', sans-serif;
-  --font-family-mono: 'DM Sans', 'Segoe UI', monospace;
+  --font-family-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
 }
 
 * {
