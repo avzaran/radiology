@@ -4,6 +4,9 @@ import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { ReportsPage } from './pages/ReportsPage'
 import { PatientsPage } from './pages/PatientsPage'
+import { TrackerPage } from './pages/TrackerPage'
+import { PatientTrackerPage } from './pages/PatientTrackerPage'
+import { CalculatorPage } from './pages/CalculatorPage'
 
 // Заглушки для страниц, которые будут реализованы в следующих этапах
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -28,9 +31,9 @@ export function App() {
         <Route element={<AppShell />}>
           <Route index element={<DashboardPage />} />
           <Route path="calculator" element={<Navigate to="/calculator/tirads" replace />} />
-          <Route path="calculator/:type" element={<PlaceholderPage title="Калькулятор шкалы" />} />
-          <Route path="tracker" element={<PlaceholderPage title="Трекер образований" />} />
-          <Route path="tracker/:id" element={<PlaceholderPage title="Карточка образования" />} />
+          <Route path="calculator/:type" element={<CalculatorPage />} />
+          <Route path="tracker" element={<TrackerPage />} />
+          <Route path="tracker/:id" element={<PatientTrackerPage />} />
           <Route path="patients" element={<PatientsPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="settings" element={<PlaceholderPage title="Настройки" />} />

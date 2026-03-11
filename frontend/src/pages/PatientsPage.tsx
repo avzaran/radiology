@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -46,6 +47,7 @@ const SEX_LABELS: Record<PatientSex, string> = {
 
 // ─── Главный компонент ────────────────────────────────────────
 export function PatientsPage() {
+  const navigate = useNavigate()
   const [patients, setPatients] = useState<Patient[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -201,6 +203,9 @@ export function PatientsPage() {
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
+                  <Button variant="ghost" size="sm" onClick={() => navigate(`/tracker/${p.id}`)}>
+                    Трекер →
+                  </Button>
                   <Button variant="secondary" size="sm" onClick={() => openEdit(p)}>
                     Изменить
                   </Button>
