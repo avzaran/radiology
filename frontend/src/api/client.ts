@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env['VITE_API_URL'] ?? 'http://localhost:4000',
+  baseURL: import.meta.env['VITE_API_URL'] ?? '',
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -22,12 +22,14 @@ api.interceptors.response.use(
       const refresh_token = localStorage.getItem('refresh_token')
       if (!refresh_token) {
         localStorage.clear()
-        window.location.href = '/login'
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
         return Promise.reject(error)
       }
       try {
         const { data } = await axios.post(
-          `${import.meta.env['VITE_API_URL'] ?? 'http://localhost:4000'}/api/auth/refresh`,
+          `${import.meta.env['VITE_API_URL'] ?? ''}/api/auth/refresh`,
           { refresh_token }
         )
         localStorage.setItem('access_token', data.data.access_token)

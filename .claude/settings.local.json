@@ -22,7 +22,22 @@
       "Bash(pg_isready)",
       "Bash(powershell.exe -Command \"docker --version\")",
       "Bash(powershell.exe -Command \"Get-Service -Name postgresql* | Select-Object Name,Status\")",
-      "Bash(powershell.exe -Command \"Get-Service | Where-Object {$_Name -like ''*postgres*'' -or $_Name -like ''*pg*''} | Select-Object Name,Status\")"
+      "Bash(powershell.exe -Command \"Get-Service | Where-Object {$_Name -like ''*postgres*'' -or $_Name -like ''*pg*''} | Select-Object Name,Status\")",
+      "Bash(sed -i \"s/from ''\\\\.\\\\/plugins\\\\/auth\\\\.js''/from ''.\\\\/plugins\\\\/auth''/\" /c/Users/LEGION/repos/radiology/backend/src/index.ts)",
+      "Bash(sed -i \"s/from ''\\\\.\\\\/routes\\\\/auth\\\\.js''/from ''.\\\\/routes\\\\/auth''/\" /c/Users/LEGION/repos/radiology/backend/src/index.ts)",
+      "Bash(sed -i \"s/from ''\\\\.\\\\/routes\\\\/patients\\\\.js''/from ''.\\\\/routes\\\\/patients''/\" /c/Users/LEGION/repos/radiology/backend/src/index.ts)",
+      "Bash(sed -i \"s/from ''\\\\.\\\\/routes\\\\/scales\\\\.js''/from ''.\\\\/routes\\\\/scales''/\" /c/Users/LEGION/repos/radiology/backend/src/index.ts)",
+      "Bash(sed -i \"s/from ''\\\\.\\\\/routes\\\\/reports\\\\.js''/from ''.\\\\/routes\\\\/reports''/\" /c/Users/LEGION/repos/radiology/backend/src/index.ts)",
+      "Bash(sed -i \"s/from ''\\\\.\\\\/routes\\\\/templates\\\\.js''/from ''.\\\\/routes\\\\/templates''/\" /c/Users/LEGION/repos/radiology/backend/src/index.ts)",
+      "Bash(grep -rn \"from ''\\\\./\" /c/Users/LEGION/repos/radiology/backend/src/routes/ /c/Users/LEGION/repos/radiology/backend/src/plugins/)",
+      "Bash(powershell.exe -Command \":*)",
+      "Bash(node -e \":*)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(curl -s http://localhost:3001/)",
+      "Bash(curl -v http://localhost:3001/)",
+      "Bash(find /c/Users/LEGION/repos/radiology/backend/src/routes -type f -name \"*.ts\" | xargs -I {} basename {})",
+      "Bash(grep -r \"app.get\\\\|app.post\\\\|app.put\\\\|app.delete\" /c/Users/LEGION/repos/radiology/backend/src/routes/*.ts | grep -oE \"app\\\\.\\(get|post|put|delete\\)\\\\\\('\\([^']+\\)'\" | head -30)"
     ]
   }
 }
