@@ -11,6 +11,7 @@ import { Badge } from '../components/ui/Badge'
 import { Tabs } from '../components/ui/Tabs'
 import { Spinner } from '../components/ui/Spinner'
 import api from '../api/client'
+import { usePatientTabsStore } from '../stores/patientTabsStore'
 
 // ─── Типы ────────────────────────────────────────────────────
 type PatientSex = 'male' | 'female' | 'unknown'
@@ -48,6 +49,7 @@ const SEX_LABELS: Record<PatientSex, string> = {
 // ─── Главный компонент ────────────────────────────────────────
 export function PatientsPage() {
   const navigate = useNavigate()
+  const openPatient = usePatientTabsStore((s) => s.openPatient)
   const [patients, setPatients] = useState<Patient[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -178,7 +180,13 @@ export function PatientsPage() {
         <div className="flex flex-col gap-3">
           {filtered.map((p) => (
             <Card key={p.id}>
-              <div className="flex items-start justify-between gap-3">
+              <div
+                className="flex items-start justify-between gap-3 cursor-pointer"
+                onClick={() => {
+                  openPatient(p.id, p.pseudonym)
+                  navigate(`/patients/${p.id}`)
+                }}
+              >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm" style={{ color: '#E2E8F0' }}>
@@ -202,10 +210,7 @@ export function PatientsPage() {
                     Добавлен: {new Date(p.created_at).toLocaleDateString('ru-RU')}
                   </div>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  <Button variant="ghost" size="sm" onClick={() => navigate(`/tracker/${p.id}`)}>
-                    Трекер →
-                  </Button>
+                <div className="flex gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
                   <Button variant="secondary" size="sm" onClick={() => openEdit(p)}>
                     Изменить
                   </Button>
