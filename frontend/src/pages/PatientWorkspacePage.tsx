@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { usePatientTabsStore } from '../stores/patientTabsStore'
 import { PatientTabBar } from '../components/patient/PatientTabBar'
 import { PatientInfoTab } from '../components/patient/PatientInfoTab'
+import { NewProtocolTab } from '../components/patient/NewProtocolTab'
+import { SavedProtocolTab } from '../components/patient/SavedProtocolTab'
 import { Spinner } from '../components/ui/Spinner'
 import api from '../api/client'
 
@@ -46,14 +48,10 @@ export function PatientWorkspacePage() {
       <div className="flex-1 overflow-y-auto">
         {activeTab?.type === 'info' && <PatientInfoTab patientId={patient.id} />}
         {activeTab?.type === 'protocol-new' && (
-          <div className="p-4" style={{ color: '#64748B' }}>
-            Новый протокол (будет подключен позже)
-          </div>
+          <NewProtocolTab patientId={patient.id} tabId={activeTab.id} />
         )}
         {activeTab?.type === 'protocol-saved' && (
-          <div className="p-4" style={{ color: '#64748B' }}>
-            Сохранённый протокол (будет подключен позже)
-          </div>
+          <SavedProtocolTab reportId={activeTab.id.replace(/^protocol-/, '')} />
         )}
       </div>
     </div>

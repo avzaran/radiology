@@ -44,13 +44,7 @@ const MODALITY_LABELS: Record<string, string> = {
 }
 
 const QUICK_ACTIONS = [
-  { href: '/calculator/tirads',     icon: '◉', title: 'TI-RADS' },
-  { href: '/calculator/fleischner', icon: '◈', title: 'Fleischner' },
-  { href: '/calculator/pirads',     icon: '◧', title: 'Pi-RADS' },
-  { href: '/calculator/lungrads',   icon: '◫', title: 'Lung-RADS' },
-  { href: '/patients',              icon: '⊕', title: 'Пациенты' },
-  { href: '/tracker',               icon: '◎', title: 'Трекер' },
-  { href: '/reports',               icon: '◰', title: 'Заключения' },
+  { href: '/patients', icon: '⊕', title: 'Пациенты' },
 ]
 
 // ─── DashboardPage ────────────────────────────────────────────────────────────

@@ -10,6 +10,7 @@ import { calcVolume } from '../../utils/calc'
 import { type Template } from '../../utils/templateEngine'
 import api from '../../api/client'
 import { usePatientTabsStore } from '../../stores/patientTabsStore'
+import { CalculatorSidePanel } from './CalculatorSidePanel'
 
 // ─── Типы ────────────────────────────────────────────────────
 type Modality = 'ct' | 'mri' | 'xray' | 'us' | 'mammography'
@@ -117,6 +118,7 @@ interface NewProtocolTabProps {
 
 // ─── Главный компонент ────────────────────────────────────────
 export function NewProtocolTab({ patientId, tabId }: NewProtocolTabProps) {
+  const [showCalc, setShowCalc] = useState(false)
   const [step, setStep] = useState(0)
   const [form, setForm] = useState<ReportForm>({
     modality: 'ct', region: '', contrast: false, description: '', conclusion: '',
@@ -197,90 +199,104 @@ export function NewProtocolTab({ patientId, tabId }: NewProtocolTabProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        <Button variant="secondary" size="sm" onClick={handleReset}>
-          Новый протокол
-        </Button>
-      </div>
+    <div className="flex h-full">
+      <div className={`flex-1 overflow-y-auto ${showCalc ? 'max-w-2xl' : 'max-w-4xl'} mx-auto flex flex-col gap-4 p-4`}>
+        <div className="flex items-center justify-between">
+          <Button variant="secondary" size="sm" onClick={handleReset}>
+            Новый протокол
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowCalc((v) => !v)}
+          >
+            {showCalc ? 'Скрыть калькуляторы' : 'Калькуляторы'}
+          </Button>
+        </div>
 
-      {/* Прогресс */}
-      <Tabs
-        tabs={STEPS}
-        active={String(step)}
-        onChange={(key) => setStep(Number(key))}
-      />
+        {/* Прогресс */}
+        <Tabs
+          tabs={STEPS}
+          active={String(step)}
+          onChange={(key) => setStep(Number(key))}
+        />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Левая панель — форма */}
-        <div className="flex flex-col gap-3">
-          {step === 0 && <StepModality form={form} setField={setField} />}
-          {step === 1 && (
-            <StepDescription form={form} setField={setField} templates={templates} />
-          )}
-          {step === 2 && (
-            <StepLesions lesions={lesions} setLesions={setLesions} updateLesion={updateLesion} />
-          )}
-          {step === 3 && (
-            <StepConclusion form={form} setField={setField} templates={templates} />
-          )}
-
-          <div className="flex gap-2">
-            {step > 0 && (
-              <Button variant="secondary" size="md" className="flex-1" onClick={() => setStep((s) => s - 1)}>
-                ← Назад
-              </Button>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Левая панель — форма */}
+          <div className="flex flex-col gap-3">
+            {step === 0 && <StepModality form={form} setField={setField} />}
+            {step === 1 && (
+              <StepDescription form={form} setField={setField} templates={templates} />
             )}
-            {step < STEPS.length - 1 && (
-              <Button size="md" className="flex-1" onClick={() => setStep((s) => s + 1)}>
-                Далее →
-              </Button>
+            {step === 2 && (
+              <StepLesions lesions={lesions} setLesions={setLesions} updateLesion={updateLesion} />
             )}
+            {step === 3 && (
+              <StepConclusion form={form} setField={setField} templates={templates} />
+            )}
+
+            <div className="flex gap-2">
+              {step > 0 && (
+                <Button variant="secondary" size="md" className="flex-1" onClick={() => setStep((s) => s - 1)}>
+                  ← Назад
+                </Button>
+              )}
+              {step < STEPS.length - 1 && (
+                <Button size="md" className="flex-1" onClick={() => setStep((s) => s + 1)}>
+                  Далее →
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Правая панель — превью и экспорт */}
+          <div className="flex flex-col gap-3">
+            <Card>
+              <div className="flex items-center justify-between mb-3">
+                <Label>Превью протокола</Label>
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleCopy}
+                    style={{
+                      backgroundColor: copied ? 'rgba(34,197,94,0.15)' : 'rgba(99,102,241,0.1)',
+                      color: copied ? '#22C55E' : '#6366F1',
+                      border: 'none',
+                    }}
+                  >
+                    {copied ? '✓ Скопировано' : 'Копировать'}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    loading={saving}
+                    onClick={handleSave}
+                    style={{
+                      backgroundColor: saved ? 'rgba(34,197,94,0.15)' : 'rgba(99,102,241,0.15)',
+                      color: saved ? '#22C55E' : '#6366F1',
+                      border: 'none',
+                    }}
+                  >
+                    {saved ? '✓ Сохранено' : 'Сохранить'}
+                  </Button>
+                </div>
+              </div>
+              <pre
+                className="text-xs leading-relaxed whitespace-pre-wrap"
+                style={{ color: '#E2E8F0', fontFamily: 'JetBrains Mono, monospace', minHeight: 200 }}
+              >
+                {preview || <span style={{ color: '#64748B' }}>Заполните форму для предпросмотра...</span>}
+              </pre>
+            </Card>
           </div>
         </div>
-
-        {/* Правая панель — превью и экспорт */}
-        <div className="flex flex-col gap-3">
-          <Card>
-            <div className="flex items-center justify-between mb-3">
-              <Label>Превью протокола</Label>
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleCopy}
-                  style={{
-                    backgroundColor: copied ? 'rgba(34,197,94,0.15)' : 'rgba(99,102,241,0.1)',
-                    color: copied ? '#22C55E' : '#6366F1',
-                    border: 'none',
-                  }}
-                >
-                  {copied ? '✓ Скопировано' : 'Копировать'}
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  loading={saving}
-                  onClick={handleSave}
-                  style={{
-                    backgroundColor: saved ? 'rgba(34,197,94,0.15)' : 'rgba(99,102,241,0.15)',
-                    color: saved ? '#22C55E' : '#6366F1',
-                    border: 'none',
-                  }}
-                >
-                  {saved ? '✓ Сохранено' : 'Сохранить'}
-                </Button>
-              </div>
-            </div>
-            <pre
-              className="text-xs leading-relaxed whitespace-pre-wrap"
-              style={{ color: '#E2E8F0', fontFamily: 'JetBrains Mono, monospace', minHeight: 200 }}
-            >
-              {preview || <span style={{ color: '#64748B' }}>Заполните форму для предпросмотра...</span>}
-            </pre>
-          </Card>
-        </div>
       </div>
+      {showCalc && (
+        <div className="w-96 flex-shrink-0">
+          <CalculatorSidePanel onClose={() => setShowCalc(false)} />
+        </div>
+      )}
     </div>
   )
 }
