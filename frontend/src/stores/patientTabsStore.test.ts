@@ -78,3 +78,26 @@ describe('closeTab', () => {
     expect(usePatientTabsStore.getState().openPatients[0].tabs).toHaveLength(1)
   })
 })
+
+describe('addSavedProtocolTab', () => {
+  it('добавляет вкладку protocol-saved и переключает на неё', () => {
+    usePatientTabsStore.getState().openPatient('1', 'Иванов И.И.')
+    usePatientTabsStore.getState().addSavedProtocolTab('1', 'report-42', '05.03.2026')
+    const patient = usePatientTabsStore.getState().openPatients[0]
+    expect(patient.tabs).toHaveLength(2)
+    expect(patient.tabs[1].id).toBe('protocol-report-42')
+    expect(patient.tabs[1].type).toBe('protocol-saved')
+    expect(patient.tabs[1].label).toBe('Протокол 05.03.2026')
+    expect(patient.tabs[1].closable).toBe(true)
+    expect(patient.activeTabId).toBe('protocol-report-42')
+  })
+
+  it('не дублирует уже открытую вкладку протокола', () => {
+    usePatientTabsStore.getState().openPatient('1', 'Иванов И.И.')
+    usePatientTabsStore.getState().addSavedProtocolTab('1', 'report-42', '05.03.2026')
+    usePatientTabsStore.getState().addSavedProtocolTab('1', 'report-42', '05.03.2026')
+    const patient = usePatientTabsStore.getState().openPatients[0]
+    expect(patient.tabs).toHaveLength(2)
+    expect(patient.activeTabId).toBe('protocol-report-42')
+  })
+})
