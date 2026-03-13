@@ -7,6 +7,7 @@ import { PatientsPage } from './pages/PatientsPage'
 import { TrackerPage } from './pages/TrackerPage'
 import { PatientTrackerPage } from './pages/PatientTrackerPage'
 import { CalculatorPage } from './pages/CalculatorPage'
+import { PatientWorkspacePage } from './pages/PatientWorkspacePage'
 
 // Заглушки для страниц, которые будут реализованы в следующих этапах
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -35,6 +36,7 @@ export function App() {
           <Route path="tracker" element={<TrackerPage />} />
           <Route path="tracker/:id" element={<PatientTrackerPage />} />
           <Route path="patients" element={<PatientsPage />} />
+          <Route path="patients/:id" element={<PatientWorkspacePage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="settings" element={<PlaceholderPage title="Настройки" />} />
         </Route>
