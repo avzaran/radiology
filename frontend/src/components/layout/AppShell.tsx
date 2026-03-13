@@ -4,19 +4,18 @@ import { useAuthStore } from '../../stores/authStore'
 import { useUIStore } from '../../stores/uiStore'
 import { Alert } from '../ui/Alert'
 import { Button } from '../ui/Button'
+import { usePatientTabsStore } from '../../stores/patientTabsStore'
 
-const NAV_ITEMS = [
+const MAIN_NAV = [
   { to: '/', label: 'Главная', icon: '⌂' },
   { to: '/patients', label: 'Пациенты', icon: '⊕' },
-  { to: '/calculator', label: 'Калькуляторы', icon: '◈' },
-  { to: '/tracker', label: 'Трекер', icon: '◉' },
-  { to: '/reports', label: 'Заключения', icon: '◧' },
 ]
 
 export function AppShell() {
   const { isAuthenticated, logout, user } = useAuthStore()
   const { isOnline, setOnline } = useUIStore()
   const navigate = useNavigate()
+  const { openPatients, activePatientId, closePatient } = usePatientTabsStore()
 
   useEffect(() => {
     if (!isAuthenticated) navigate('/login')
@@ -50,27 +49,60 @@ export function AppShell() {
         </div>
 
         <nav className="flex-1 p-3 flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  isActive
-                    ? 'text-white'
-                    : 'hover:text-white'
-                }`
-              }
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? 'rgba(99,102,241,0.15)' : 'transparent',
-                color: isActive ? '#E2E8F0' : '#64748B',
-                borderLeft: isActive ? '2px solid #6366F1' : '2px solid transparent',
-              })}
-            >
-              <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{item.icon}</span>
-              {item.label}
-            </NavLink>
+          {MAIN_NAV.map((item) => (
+            <div key={item.to}>
+              <NavLink
+                to={item.to}
+                end={item.to === '/'}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                    isActive
+                      ? 'text-white'
+                      : 'hover:text-white'
+                  }`
+                }
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? 'rgba(99,102,241,0.15)' : 'transparent',
+                  color: isActive ? '#E2E8F0' : '#64748B',
+                  borderLeft: isActive ? '2px solid #6366F1' : '2px solid transparent',
+                })}
+              >
+                <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{item.icon}</span>
+                {item.label}
+              </NavLink>
+              {item.to === '/patients' && openPatients.length > 0 && (
+                <div className="ml-4 flex flex-col gap-0.5">
+                  {openPatients.map((p) => (
+                    <div key={p.id} className="flex items-center group">
+                      <NavLink
+                        to={`/patients/${p.id}`}
+                        className="flex-1 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors truncate"
+                        style={({ isActive }) => ({
+                          backgroundColor: isActive ? 'rgba(99,102,241,0.15)' : 'transparent',
+                          color: isActive ? '#E2E8F0' : '#64748B',
+                        })}
+                      >
+                        <span style={{ color: '#6366F1', fontFamily: 'JetBrains Mono, monospace' }}>•</span>
+                        <span className="truncate">{p.pseudonym}</span>
+                      </NavLink>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          closePatient(p.id)
+                          if (activePatientId === p.id) navigate('/patients')
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1 text-xs transition-opacity"
+                        style={{ color: '#64748B' }}
+                        title="Закрыть"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </nav>
 
@@ -93,7 +125,7 @@ export function AppShell() {
           className="lg:hidden fixed bottom-0 left-0 right-0 flex border-t z-50"
           style={{ backgroundColor: '#0F172A', borderColor: 'rgba(99,102,241,0.15)' }}
         >
-          {NAV_ITEMS.map((item) => (
+          {MAIN_NAV.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
