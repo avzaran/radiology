@@ -37,7 +37,11 @@
       "Bash(curl -s http://localhost:3001/)",
       "Bash(curl -v http://localhost:3001/)",
       "Bash(find /c/Users/LEGION/repos/radiology/backend/src/routes -type f -name \"*.ts\" | xargs -I {} basename {})",
-      "Bash(grep -r \"app.get\\\\|app.post\\\\|app.put\\\\|app.delete\" /c/Users/LEGION/repos/radiology/backend/src/routes/*.ts | grep -oE \"app\\\\.\\(get|post|put|delete\\)\\\\\\('\\([^']+\\)'\" | head -30)"
+      "Bash(grep -r \"app.get\\\\|app.post\\\\|app.put\\\\|app.delete\" /c/Users/LEGION/repos/radiology/backend/src/routes/*.ts | grep -oE \"app\\\\.\\(get|post|put|delete\\)\\\\\\('\\([^']+\\)'\" | head -30)",
+      "Bash(npx vitest:*)",
+      "Bash(node_modules/.bin/vitest run:*)",
+      "Bash(where gh:*)",
+      "Bash(cmd.exe /c \"where gh\")"
     ]
   }
 }
